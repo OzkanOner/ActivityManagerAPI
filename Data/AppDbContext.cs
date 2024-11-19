@@ -1,5 +1,6 @@
 ﻿using ActivityManagerAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using System.Collections.Generic;
 
 namespace ActivityManagerAPI.Data

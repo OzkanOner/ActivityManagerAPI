@@ -22,8 +22,11 @@ namespace ActivityManagerAPI.Repositories.Concrete
         public async Task Delete(int id)
         {
             TEntity entity = await GetById(id);
-            _context.Set<TEntity>().Remove(entity);
-            await _context.SaveChangesAsync();
+            if (entity != null)
+            {
+                _context.Set<TEntity>().Remove(entity);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public IQueryable<TEntity> GetAll()
