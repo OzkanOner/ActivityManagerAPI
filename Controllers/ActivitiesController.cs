@@ -1,4 +1,5 @@
 ﻿using ActivityManagerAPI.Models;
+using ActivityManagerAPI.Models.Dtos;
 using ActivityManagerAPI.Repositories.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -18,20 +19,56 @@ namespace ActivityManagerAPI.Controllers
         }
 
         [HttpGet]
-        public Task<IActionResult> GetAllActivities()
+        public async Task<IActionResult> GetAllActivities()
         {
-            List<Activity> activities = _activityRepository.GetAll().ToList();
-            if (activities == null || activities.Count == 0)
-                return Task.FromResult<IActionResult>(NoContent());
+            var result = await _activityRepository.GetAll();
+            return result;
+        }
 
-            return Task.FromResult<IActionResult>(Ok(activities));
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetActivityById(int id)
+        {
+            var result = await _activityRepository.GetById(id);
+            return result;
         }
 
         [HttpPost]
-        public Task<IActionResult> AddActivity(Activity activity)
+        public async Task<IActionResult> CreateActivity([FromBody] ActivityCreateDTO activityCreateDTO)
         {
-            var result = _activityRepository.Create(activity);
-            return Task.FromResult<IActionResult>(Ok());
+            if (activityCreateDTO == null)
+            {
+                return BadRequest("Missing activity data!");
+            }
+
+            var activity = new Activity
+            {
+                Title = activityCreateDTO.Title,
+                Description = activityCreateDTO.Description,
+                DueDate = activityCreateDTO.DueDate,
+                CreatedUserId = activityCreateDTO.CreatedUserId
+            };
+
+            var result = await _activityRepository.Create(activity);
+            return result;
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateActivity([FromBody] Activity activity)
+        {
+            if (activity == null)
+            {
+                return BadRequest("Missing activity data!");
+            }
+
+            var result = await _activityRepository.Update(activity);
+            return result;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteActivity(int id)
+        {
+            var result = await _activityRepository.Delete(id);
+            return result;
         }
     }
 }

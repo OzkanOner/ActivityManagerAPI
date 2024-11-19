@@ -1,6 +1,9 @@
 ﻿using ActivityManagerAPI.Models;
 using ActivityManagerAPI.Repositories.Abstract;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ActivityManagerAPI.Repositories.Concrete
 {
@@ -13,36 +16,95 @@ namespace ActivityManagerAPI.Repositories.Concrete
             _context = context;
         }
 
-        public async Task Create(TEntity entity)
+        public async Task<IActionResult> Create(TEntity entity)
         {
-            await _context.Set<TEntity>().AddAsync(entity);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task Delete(int id)
-        {
-            TEntity entity = await GetById(id);
-            if (entity != null)
+            try
             {
-                _context.Set<TEntity>().Remove(entity);
+                await _context.Set<TEntity>().AddAsync(entity);
                 await _context.SaveChangesAsync();
+                return new OkObjectResult(entity);
+            }
+            catch
+            {
+                return new StatusCodeResult(500);
             }
         }
 
-        public IQueryable<TEntity> GetAll()
+        public async Task<IActionResult> Delete(int id)
         {
-            return _context.Set<TEntity>().AsNoTracking();
+            try
+            {
+                var entity = await GetById(id);
+                if (entity == null)
+                {
+                    return new NotFoundResult();
+                }
+
+                _context.Set<TEntity>().Remove((TEntity)entity);
+                await _context.SaveChangesAsync();
+                return new OkResult();
+            }
+            catch
+            {
+                return new StatusCodeResult(500);
+            }
         }
 
-        public async Task<TEntity> GetById(int id)
+        public async Task<IActionResult> GetAll()
         {
-            return await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            try
+            {
+                var entities = await _context.Set<TEntity>().AsNoTracking().ToListAsync();
+                if (entities == null || !entities.Any())
+                {
+                    return new NotFoundResult();
+                }
+                return new OkObjectResult(entities);
+            }
+            catch
+            {
+                return new StatusCodeResult(500);
+            }
         }
 
-        public async Task Update(TEntity entity)
+        public async Task<IActionResult> GetById(int id)
         {
-            _context.Set<TEntity>().Update(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var entity = await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                if (entity == null)
+                {
+                    return new NotFoundResult();
+                }
+                return new OkObjectResult(entity);
+            }
+            catch
+            {
+                return new StatusCodeResult(500);
+            }
+        }
+
+        public async Task<IActionResult> Update(TEntity entity)
+        {
+            try
+            {
+                var existingEntity = await _context.Set<TEntity>().FindAsync(entity.Id);
+
+                if (existingEntity == null)
+                {
+                    return new NotFoundObjectResult($"Entity with Id {entity.Id} not found.");
+                }
+
+                _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+
+                await _context.SaveChangesAsync();
+
+                return new OkObjectResult(existingEntity);
+            }
+            catch
+            {
+                return new StatusCodeResult(500);
+            }
         }
     }
 }
