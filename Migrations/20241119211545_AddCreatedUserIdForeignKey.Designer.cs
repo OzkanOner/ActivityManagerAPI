@@ -4,6 +4,7 @@ using ActivityManagerAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ActivityManagerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241119211545_AddCreatedUserIdForeignKey")]
+    partial class AddCreatedUserIdForeignKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,8 +59,7 @@ namespace ActivityManagerAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedUserId")
-                        .HasDatabaseName("IX_Activity_CreatedUserId");
+                    b.HasIndex("CreatedUserId");
 
                     b.ToTable("Activities");
                 });
@@ -99,7 +101,7 @@ namespace ActivityManagerAPI.Migrations
                     b.HasOne("ActivityManagerAPI.Models.User", "CreatedUser")
                         .WithMany()
                         .HasForeignKey("CreatedUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CreatedUser");

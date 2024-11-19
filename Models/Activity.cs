@@ -11,5 +11,8 @@ namespace ActivityManagerAPI.Models
         public DateTime DueDate { get; set; }
         public DateTime CompletedDate { get; set; }
         public int CreatedUserId { get; set; }
+
+
+        public User CreatedUser { get; set; }
     }
 }

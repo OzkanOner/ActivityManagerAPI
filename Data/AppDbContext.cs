@@ -11,5 +11,20 @@ namespace ActivityManagerAPI.Data
         public DbSet<Activity> Activities { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Activity>()
+                .HasIndex(a => a.CreatedUserId)
+                .HasDatabaseName("IX_Activity_CreatedUserId");
+
+            modelBuilder.Entity<Activity>()
+                .HasOne(a => a.CreatedUser)
+                .WithMany()
+                .HasForeignKey(a => a.CreatedUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }
