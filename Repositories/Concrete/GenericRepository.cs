@@ -1,4 +1,5 @@
-﻿using ActivityManagerAPI.Models;
+﻿using ActivityManagerAPI.Data;
+using ActivityManagerAPI.Models;
 using ActivityManagerAPI.Repositories.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +10,9 @@ namespace ActivityManagerAPI.Repositories.Concrete
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly DbContext _context;
+        private readonly AppDbContext _context;
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(AppDbContext context)
         {
             _context = context;
         }
