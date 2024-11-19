@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -26,19 +27,16 @@ namespace ActivityManagerAPI.Controllers
         }
 
         [HttpPost("token")]
-        public async Task<IActionResult> GenerateTokenAsync([FromBody] Login login)
+        public async Task<IActionResult> GenerateTokenAsync([FromBody] Login loginModel)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.Username == login.Username);
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginModel.Username);
 
             if (user == null)
-            {
                 return Unauthorized("User not found!");
-            }
 
-            if (!PasswordHelper.VerifyPasswordHash(login.Password, user.PasswordHash))
-            {
+            bool isPasswordValid = PasswordHelper.VerifyPasswordHash(loginModel.Password, user.PasswordHash, user.PasswordSalt);
+            if (!isPasswordValid)
                 return Unauthorized("Password is not correct!");
-            }
 
             var claims = new[]
             {
@@ -64,22 +62,24 @@ namespace ActivityManagerAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Register registerModel)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA256())
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == registerModel.Username || u.Email == registerModel.Email);
+            if (user != null)
+                return BadRequest("User name or email already exists!");
+
+            PasswordHelper.CreatePasswordHash(registerModel.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var newUser = new User
             {
-                var passwordHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(registerModel.Password)));
+                Username = registerModel.Username,
+                Email = registerModel.Email,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
 
-                var newUser = new User
-                {
-                    Username = registerModel.Username,
-                    PasswordHash = passwordHash,
-                    Email = registerModel.Email
-                };
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
 
-                _context.Users.Add(newUser);
-                await _context.SaveChangesAsync();
-
-                return Ok("User registered!");
-            }
+            return Ok("User registered successfully");
         }
     }
 }
