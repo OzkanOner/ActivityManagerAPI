@@ -1,0 +1,6 @@
+@ActivityManagerAPI_HostAddress = http://localhost:5032
+
+GET {{ActivityManagerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
