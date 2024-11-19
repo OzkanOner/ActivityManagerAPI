@@ -12,7 +12,7 @@ namespace ActivityManagerAPI.Models
         public DateTime CompletedDate { get; set; }
         public int CreatedUserId { get; set; }
 
-
         public User CreatedUser { get; set; }
+        public ICollection<UserActivity> UserActivities { get; set; } = new List<UserActivity>();
     }
 }

@@ -25,6 +25,24 @@ namespace ActivityManagerAPI.Data
                 .WithMany()
                 .HasForeignKey(a => a.CreatedUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserActivity>()
+                .HasOne(ua => ua.User)
+                .WithMany(u => u.UserActivities)
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserActivity>()
+                .HasOne(ua => ua.Activity)
+                .WithMany(a => a.UserActivities)
+                .HasForeignKey(ua => ua.ActivityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserActivity>()
+                .HasOne(ua => ua.AssignerUser)
+                .WithMany(u => u.AssignedActivities)
+                .HasForeignKey(ua => ua.AssignerUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
