@@ -1,9 +1,11 @@
 ﻿using ActivityManagerAPI.Models;
 using ActivityManagerAPI.Models.Dtos;
 using ActivityManagerAPI.Repositories.Abstract;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ActivityManagerAPI.Controllers
 {
@@ -12,35 +14,52 @@ namespace ActivityManagerAPI.Controllers
     public class ActivitiesController : ControllerBase
     {
         private readonly IActivityRepository _activityRepository;
+        private readonly IMapper _mapper;
 
-        public ActivitiesController(IActivityRepository activityRepository)
+        public ActivitiesController(IActivityRepository activityRepository, IMapper mapper)
         {
             _activityRepository = activityRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllActivities()
         {
-            var result = await _activityRepository.GetAll();
-            return result;
+            try
+            {
+                var result = await _activityRepository.GetAllActivitiesWithRelations();
+
+                if (result == null || !result.Any())
+                    return NotFound("No activities found.");
+
+                var activityDtos = _mapper.Map<List<ActivityDTO>>(result);
+                return Ok(activityDtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetActivityById(int id)
         {
-            var result = await _activityRepository.GetById(id);
-            return result;
+            var result = await _activityRepository.GetActivityByIdWithRelations(id);
+
+            if (result == null)
+                return NotFound("Activity not found");
+
+            var activityDto = _mapper.Map<ActivityDTO>(result);
+            return Ok(activityDto);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateActivity([FromBody] ActivityCreateDTO activityCreateDTO)
         {
             if (activityCreateDTO == null)
-            {
                 return BadRequest("Missing activity data!");
-            }
 
-            var activity = new Activity
+            var activity = new Models.Activity
             {
                 Title = activityCreateDTO.Title,
                 Description = activityCreateDTO.Description,
@@ -53,7 +72,7 @@ namespace ActivityManagerAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateActivity([FromBody] Activity activity)
+        public async Task<IActionResult> UpdateActivity([FromBody] Models.Activity activity)
         {
             if (activity == null)
             {

@@ -35,13 +35,13 @@ namespace ActivityManagerAPI.Repositories.Concrete
         {
             try
             {
-                var entity = await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                var entity = await _context.Set<TEntity>().FindAsync(id);
                 if (entity == null)
                 {
                     return new NotFoundResult();
                 }
 
-                _context.Set<TEntity>().Remove((TEntity)entity);
+                _context.Set<TEntity>().Remove(entity);
                 await _context.SaveChangesAsync();
                 return new OkResult();
             }

@@ -1,8 +1,6 @@
-﻿using ActivityManagerAPI.Models.Abstract;
-
-namespace ActivityManagerAPI.Models
+﻿namespace ActivityManagerAPI.Models.Dtos
 {
-    public class Activity : BaseEntity
+    public class ActivityDTO : BaseEntity
     {
         public string? Title { get; set; }
         public string? Description { get; set; }
@@ -12,6 +10,6 @@ namespace ActivityManagerAPI.Models
         public DateTime CompletedDate { get; set; }
         public int CreatedUserId { get; set; }
 
-        public User CreatedUser { get; set; }
+        public UserDTO CreatedUser { get; set; }
     }
 }

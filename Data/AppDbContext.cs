@@ -1,7 +1,5 @@
 ﻿using ActivityManagerAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using System.Collections.Generic;
 
 namespace ActivityManagerAPI.Data
 {
@@ -34,15 +32,15 @@ namespace ActivityManagerAPI.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<UserActivity>()
-                .HasOne(ua => ua.Activity)
-                .WithMany(a => a.UserActivities)
-                .HasForeignKey(ua => ua.ActivityId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<UserActivity>()
                 .HasOne(ua => ua.AssignerUser)
                 .WithMany(u => u.AssignedActivities)
                 .HasForeignKey(ua => ua.AssignerUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserActivity>()
+                .HasOne(ua => ua.Activity)
+                .WithOne()
+                .HasForeignKey<UserActivity>(ua => ua.ActivityId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

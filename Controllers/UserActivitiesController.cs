@@ -59,7 +59,7 @@ namespace ActivityManagerAPI.Controllers
         [HttpGet("GetUserActivity/{userId}/{activityId}")]
         public async Task<IActionResult> GetUserActivity(int userId, int activityId)
         {
-            var userActivity = await _userActivityRepository.GetUserActivityByUserAndActivity(userId, activityId);
+            var userActivity = await _userActivityRepository.GetUserActivityByUserAndActivityDTO(userId, activityId);
 
             if (userActivity == null)
                 return NotFound("UserActivity not found");

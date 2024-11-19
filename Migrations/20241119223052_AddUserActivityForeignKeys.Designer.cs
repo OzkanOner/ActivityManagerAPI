@@ -4,6 +4,7 @@ using ActivityManagerAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ActivityManagerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241119223052_AddUserActivityForeignKeys")]
+    partial class AddUserActivityForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,6 +108,9 @@ namespace ActivityManagerAPI.Migrations
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ActivityId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("AssignerUserId")
                         .HasColumnType("int");
 
@@ -117,14 +123,25 @@ namespace ActivityManagerAPI.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId2")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId")
-                        .IsUnique();
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("ActivityId1");
 
                     b.HasIndex("AssignerUserId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.HasIndex("UserId2");
 
                     b.ToTable("UserActivities");
                 });
@@ -143,28 +160,45 @@ namespace ActivityManagerAPI.Migrations
             modelBuilder.Entity("ActivityManagerAPI.Models.UserActivity", b =>
                 {
                     b.HasOne("ActivityManagerAPI.Models.Activity", "Activity")
-                        .WithOne()
-                        .HasForeignKey("ActivityManagerAPI.Models.UserActivity", "ActivityId")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("ActivityManagerAPI.Models.Activity", null)
+                        .WithMany("UserActivities")
+                        .HasForeignKey("ActivityId1");
+
                     b.HasOne("ActivityManagerAPI.Models.User", "AssignerUser")
-                        .WithMany("AssignedActivities")
+                        .WithMany()
                         .HasForeignKey("AssignerUserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("ActivityManagerAPI.Models.User", "User")
-                        .WithMany("UserActivities")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("ActivityManagerAPI.Models.User", null)
+                        .WithMany("UserActivities")
+                        .HasForeignKey("UserId1");
+
+                    b.HasOne("ActivityManagerAPI.Models.User", null)
+                        .WithMany("AssignedActivities")
+                        .HasForeignKey("UserId2");
 
                     b.Navigation("Activity");
 
                     b.Navigation("AssignerUser");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ActivityManagerAPI.Models.Activity", b =>
+                {
+                    b.Navigation("UserActivities");
                 });
 
             modelBuilder.Entity("ActivityManagerAPI.Models.User", b =>
