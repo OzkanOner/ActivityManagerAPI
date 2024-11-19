@@ -1,11 +1,8 @@
-﻿using ActivityManagerAPI.Models;
-using ActivityManagerAPI.Models.Dtos;
+﻿using ActivityManagerAPI.Models.Dtos;
 using ActivityManagerAPI.Repositories.Abstract;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace ActivityManagerAPI.Controllers
 {
@@ -22,6 +19,7 @@ namespace ActivityManagerAPI.Controllers
             _mapper = mapper;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllActivities()
         {
@@ -41,6 +39,7 @@ namespace ActivityManagerAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetActivityById(int id)
         {
@@ -53,6 +52,7 @@ namespace ActivityManagerAPI.Controllers
             return Ok(activityDto);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateActivity([FromBody] ActivityCreateDTO activityCreateDTO)
         {
@@ -71,6 +71,7 @@ namespace ActivityManagerAPI.Controllers
             return result;
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateActivity([FromBody] Models.Activity activity)
         {
@@ -83,6 +84,7 @@ namespace ActivityManagerAPI.Controllers
             return result;
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteActivity(int id)
         {

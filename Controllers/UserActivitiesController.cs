@@ -1,7 +1,7 @@
 ﻿using ActivityManagerAPI.Models;
 using ActivityManagerAPI.Models.Dtos;
 using ActivityManagerAPI.Repositories.Abstract;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityManagerAPI.Controllers
@@ -24,6 +24,7 @@ namespace ActivityManagerAPI.Controllers
             _activityRepository = activityRepository;
         }
 
+        [Authorize]
         [HttpPost("AssignActivityToUser")]
         public async Task<IActionResult> AssignActivityToUser([FromBody] UserActivityAssignDTO userActivityDTO)
         {
@@ -56,6 +57,7 @@ namespace ActivityManagerAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("GetUserActivity/{userId}/{activityId}")]
         public async Task<IActionResult> GetUserActivity(int userId, int activityId)
         {
@@ -67,6 +69,7 @@ namespace ActivityManagerAPI.Controllers
             return Ok(userActivity);
         }
 
+        [Authorize]
         [HttpPut("UpdateUserActivityStatus/{userId}/{activityId}")]
         public async Task<IActionResult> UpdateUserActivityStatus(int userId, int activityId, bool isCompleted)
         {
@@ -88,6 +91,7 @@ namespace ActivityManagerAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("UnassignUserActivity/{userId}/{activityId}")]
         public async Task<IActionResult> UnassignUserActivity(int userId, int activityId)
         {
