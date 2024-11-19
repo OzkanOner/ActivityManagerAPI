@@ -26,8 +26,8 @@ namespace ActivityManagerAPI.Controllers
             _context = context;
         }
 
-        [HttpPost("token")]
-        public async Task<IActionResult> GenerateTokenAsync([FromBody] Login loginModel)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] Login loginModel)
         {
             User user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginModel.Username);
 
