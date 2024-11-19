@@ -24,7 +24,7 @@ namespace ActivityManagerAPI.Repositories.Concrete
                 await _context.SaveChangesAsync();
                 return new OkObjectResult(entity);
             }
-            catch
+            catch (Exception ex)
             {
                 return new StatusCodeResult(500);
             }
@@ -34,7 +34,7 @@ namespace ActivityManagerAPI.Repositories.Concrete
         {
             try
             {
-                var entity = await GetById(id);
+                var entity = await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
                 if (entity == null)
                 {
                     return new NotFoundResult();
@@ -44,7 +44,7 @@ namespace ActivityManagerAPI.Repositories.Concrete
                 await _context.SaveChangesAsync();
                 return new OkResult();
             }
-            catch
+            catch (Exception ex)
             {
                 return new StatusCodeResult(500);
             }
@@ -61,7 +61,7 @@ namespace ActivityManagerAPI.Repositories.Concrete
                 }
                 return new OkObjectResult(entities);
             }
-            catch
+            catch (Exception ex)
             {
                 return new StatusCodeResult(500);
             }
@@ -78,7 +78,7 @@ namespace ActivityManagerAPI.Repositories.Concrete
                 }
                 return new OkObjectResult(entity);
             }
-            catch
+            catch (Exception ex)
             {
                 return new StatusCodeResult(500);
             }
@@ -101,7 +101,7 @@ namespace ActivityManagerAPI.Repositories.Concrete
 
                 return new OkObjectResult(existingEntity);
             }
-            catch
+            catch (Exception ex)
             {
                 return new StatusCodeResult(500);
             }
