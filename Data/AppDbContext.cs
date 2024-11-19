@@ -9,6 +9,7 @@ namespace ActivityManagerAPI.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Activity> Activities { get; set; }
+        public DbSet<UserActivity> UserActivities { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
