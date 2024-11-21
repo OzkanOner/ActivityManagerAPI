@@ -6,6 +6,7 @@ namespace ActivityManagerAPI.Repositories.Abstract
     public interface IActivityRepository : IGenericRepository<Activity>
     {
         Task<List<Activity>> GetAllActivitiesWithRelations();
+        Task<List<Activity>> GetAllActivitiesByUserId(int userId);
         Task<Activity?> GetActivityByIdWithRelations(int id);
         Task<Activity?> UpdateActivity(ActivityUpdateDto activityUpdateDto);
     }

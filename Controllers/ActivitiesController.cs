@@ -53,6 +53,19 @@ namespace ActivityManagerAPI.Controllers
         }
 
         [Authorize]
+        [HttpGet("GetUserActivities/{userId}")]
+        public async Task<IActionResult> GetActivityByUserId(int userId)
+        {
+            var result = await _activityRepository.GetAllActivitiesByUserId(userId);
+
+            if (result == null)
+                return NotFound("User activity not found");
+
+            var activityDto = _mapper.Map<List<ActivityDTO>>(result);
+            return Ok(activityDto);
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateActivity([FromBody] ActivityCreateDTO activityCreateDTO)
         {

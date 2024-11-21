@@ -38,6 +38,15 @@ namespace ActivityManagerAPI.Repositories.Concrete
                 .ToListAsync();
         }
 
+        public async Task<List<Activity>> GetAllActivitiesByUserId(int userId)
+        {
+            return await _context.Activities
+                .Include(a => a.CreatedUser)
+                .Where(a => a.CreatedUserId == userId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<Activity> UpdateActivity(ActivityUpdateDto activityUpdateDto)
         {
             try
