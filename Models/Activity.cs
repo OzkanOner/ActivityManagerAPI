@@ -13,5 +13,6 @@ namespace ActivityManagerAPI.Models
         public int CreatedUserId { get; set; }
 
         public User CreatedUser { get; set; }
+        public ICollection<UserActivity> UserActivities { get; set; }
     }
 }

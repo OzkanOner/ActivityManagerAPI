@@ -73,15 +73,15 @@ namespace ActivityManagerAPI.Controllers
 
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> UpdateActivity([FromBody] Models.Activity activity)
+        public async Task<IActionResult> UpdateActivity([FromBody] ActivityUpdateDto activityUpdateDto)
         {
-            if (activity == null)
+            if (activityUpdateDto == null)
             {
                 return BadRequest("Missing activity data!");
             }
 
-            var result = await _activityRepository.Update(activity);
-            return result;
+            var result = await _activityRepository.UpdateActivity(activityUpdateDto);
+            return Ok(result);
         }
 
         [Authorize]

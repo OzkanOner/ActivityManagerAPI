@@ -1,4 +1,5 @@
 ﻿using ActivityManagerAPI.Models;
+using ActivityManagerAPI.Models.Dtos;
 
 namespace ActivityManagerAPI.Repositories.Abstract
 {
@@ -6,5 +7,6 @@ namespace ActivityManagerAPI.Repositories.Abstract
     {
         Task<List<Activity>> GetAllActivitiesWithRelations();
         Task<Activity?> GetActivityByIdWithRelations(int id);
+        Task<Activity?> UpdateActivity(ActivityUpdateDto activityUpdateDto);
     }
 }

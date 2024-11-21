@@ -39,8 +39,8 @@ namespace ActivityManagerAPI.Data
 
             modelBuilder.Entity<UserActivity>()
                 .HasOne(ua => ua.Activity)
-                .WithOne()
-                .HasForeignKey<UserActivity>(ua => ua.ActivityId)
+                .WithMany(a => a.UserActivities)
+                .HasForeignKey(ua => ua.ActivityId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

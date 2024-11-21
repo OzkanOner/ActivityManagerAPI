@@ -11,5 +11,6 @@
         public int CreatedUserId { get; set; }
 
         public UserDTO CreatedUser { get; set; }
+        public List<UserActivityDTO> UserActivities { get; set; } = new List<UserActivityDTO>();
     }
 }

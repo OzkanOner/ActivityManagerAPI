@@ -4,6 +4,7 @@ using ActivityManagerAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ActivityManagerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120235042_AddUserActivitiesToActivity")]
+    partial class AddUserActivitiesToActivity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,6 +108,9 @@ namespace ActivityManagerAPI.Migrations
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ActivityId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("AssignerUserId")
                         .HasColumnType("int");
 
@@ -119,7 +125,10 @@ namespace ActivityManagerAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId");
+                    b.HasIndex("ActivityId")
+                        .IsUnique();
+
+                    b.HasIndex("ActivityId1");
 
                     b.HasIndex("AssignerUserId");
 
@@ -142,10 +151,14 @@ namespace ActivityManagerAPI.Migrations
             modelBuilder.Entity("ActivityManagerAPI.Models.UserActivity", b =>
                 {
                     b.HasOne("ActivityManagerAPI.Models.Activity", "Activity")
-                        .WithMany("UserActivities")
-                        .HasForeignKey("ActivityId")
+                        .WithOne()
+                        .HasForeignKey("ActivityManagerAPI.Models.UserActivity", "ActivityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("ActivityManagerAPI.Models.Activity", null)
+                        .WithMany("UserActivities")
+                        .HasForeignKey("ActivityId1");
 
                     b.HasOne("ActivityManagerAPI.Models.User", "AssignerUser")
                         .WithMany("AssignedActivities")
