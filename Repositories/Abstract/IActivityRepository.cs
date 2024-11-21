@@ -7,6 +7,7 @@ namespace ActivityManagerAPI.Repositories.Abstract
     {
         Task<List<Activity>> GetAllActivitiesWithRelations();
         Task<List<Activity>> GetAllActivitiesByUserId(int userId);
+        Task<List<Activity>> GetActivityAssignedToUserId(int userId);
         Task<Activity?> GetActivityByIdWithRelations(int id);
         Task<Activity?> UpdateActivity(ActivityUpdateDto activityUpdateDto);
     }

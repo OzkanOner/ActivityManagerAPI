@@ -47,6 +47,17 @@ namespace ActivityManagerAPI.Repositories.Concrete
                 .ToListAsync();
         }
 
+        public async Task<List<Activity>> GetActivityAssignedToUserId(int userId)
+        {
+            return await _context.UserActivities
+                .Where(ua => ua.UserId == userId)
+                .Include(ua => ua.Activity)
+                .Select(ua => ua.Activity)
+                .Distinct()
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<Activity> UpdateActivity(ActivityUpdateDto activityUpdateDto)
         {
             try
